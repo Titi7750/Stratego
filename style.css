@@ -1,0 +1,101 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
+    gap: 2px;
+    margin-bottom: 20px;
+    background-color: #8B4513; /* Brown color for the board */
+}
+
+.square {
+    border: 1px solid #a6a6a6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #fff; /* White color for the cells */
+    width: 50px;
+    height: 50px;
+    z-index: 1;
+}
+
+.square:hover {
+    background-color: #442626; /* Lighter background on hover */
+}
+
+.piece {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3a3737; /* Set background color for the piece */
+    box-sizing: border-box;
+    padding: 8px;
+    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.piece:hover {
+    background-color: #e0e0e0; /* Lighter background on hover */
+}
+
+.piece p {
+    color: #fff; /* Text color for the piece rank */
+    font-size: 14px;
+    margin: 0;
+}
+
+.piece-box {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: flex-start; /* Align items at the top of the flex container */
+    margin-top: 20px;
+}
+
+.piece-box .piece {
+    border: 1px solid #ccc;
+    margin: 5px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+    /* Additional styles for each piece */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.piece-box .piece:hover {
+    background-color: #e0e0e0; /* Lighter background on hover */
+}
+
+.piece-box .piece p:nth-child(1) {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.piece-box .piece p:nth-child(2) {
+    color: #555;
+}
+
+.piece-box .piece p:nth-child(3) {
+    font-size: 12px;
+    color: #777;
+}
+
+.selected-piece {
+    margin-top: 20px;
+}
+
+.status {
+    margin-top: 20px;
+}
