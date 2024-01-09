@@ -1,43 +1,39 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Stratego Board Game</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <div class="game-container" x-data="strategoGame()">
-        <div x-data="strategoGame()" @click="handleBoardClick($event)" class="board">
-            <template x-for="(row, rowIndex) in board" :key="rowIndex">
-                <template x-for="(cell, colIndex) in row" :key="colIndex">
-                    <div class="square" :data-row="rowIndex" :data-col="colIndex">
-                        <div class="piece" x-show="cell.piece" :class="cell.piece.color">
-                            <p x-text="cell.piece.type"></p>
-                        </div>
-                    </div>
-                </template>
-            </template>
+    <div class="gameContainer">
+        <div class="containerStrategoGame">
+            <!-- generate button -->
+            <div class="containerButton">
+                <button class="generate buttonStyle">Generate</button>
+                <button class="play buttonStyle">Jouer</button>
+            </div>
+            <!-- board -->
+            <div class="board"></div>
         </div>
-        <div class="piece-box">
-            <template x-for="piece in pieceTypes" :key="piece">
-                <div class="piece" @click="selectPiece(piece)">
-                    <p x-text="piece.name"></p>
-                    <p x-text="piece.count"></p>
-                    <p x-text="piece.rank"></p>
-                </div>
-            </template>
+        <div class="choosenPiece hidden">
+            <p class="namePieceSelected"></p>
+            <p class="pointsPieceSelected"></p>
         </div>
-        <div x-show="selectedPiece" class="selected-piece">
-            <p x-text="selectedPiece"></p>
-            <button @click="placeSelectedPiece()">Place Piece</button>
+        <div class="containerChoosenPieces">
+            <div class="selectedPiece">
+                <!-- Pieces generate by js -->
+            </div>
+            <div class="containerPlacePiece">
+                <button class="buttonStyle placePiece">Place piece</button>
+            </div>
         </div>
     </div>
-    <button id="deletePlayer">Delete Player</button>
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 
 </html>
