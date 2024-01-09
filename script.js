@@ -1,84 +1,254 @@
-function strategoGame() {
-    
-  return {
+document.addEventListener('DOMContentLoaded', function () {
+    const generateBoardPieces = document.querySelector(".generate");
+    let board = document.querySelector('.board');
+    let containerChoosenPieces = document.querySelector('.containerChoosenPieces');
+    let selectedPieces = document.querySelector('.selectedPiece');
+    let placePiece = document.querySelector('.placePiece');
+    let choosenPiece = document.querySelector('.choosenPiece ');
+    let play = document.querySelector('.play');
+    let playing = false;
+    let count = 0;
+    let piecesToPlay = [];
+    let piecesObjects;
 
-    board: initializeBoard,  
+    //Generate board
+    function generateBoard() {
+        const numRows = 10; // lines
+        const numCols = 10; // columns
 
-    pieceTypes: [
-      { rank: 10, name: "Maréchal", count: 1, color: "red" },
-      { rank: 9, name: "Général", count: 1 , color: "blue"  },
-      { rank: 8, name: "Colonel", count: 2 , color: "green"  },
-      { rank: 7, name: "Commandant", count: 3 , color: "yellow"  },
-      { rank: 6, name: "Capitaine", count: 4 , color: "brown"  },
-      { rank: 5, name: "Lieutenant", count: 4 , color: "purple"  },
-      { rank: 4, name: "Sergent", count: 4 , color: "grey"  },
-      { rank: 3, name: "Démineur", count: 5 , color: "pink"  },
-      { rank: 2, name: "Éclaireur", count: 8 , color: "orange"  },
-      { rank: 1, name: "Espion", count: 1 , color: "black"  },
-      { rank: 0, name: "Drapeau", count: 1 , color: "beige"  },
-      { rank: 11, name: "Bombe", count: 6 , color: "lila"  },
-    ],
+        for (let row = 0; row < numRows; row++) {
+            for (let col = 0; col < numCols; col++) {
+                let square = document.createElement('div');
+                square.classList.add('square');
 
-    winner: null,
+                square.setAttribute('data-row', row);
+                square.setAttribute('data-col', col);
 
-    handleBoardClick(event) {
+                let piece = document.createElement('div');
+                piece.classList.add('piece');
 
-        const row = event.target.dataset.row;
-        const col = event.target.dataset.col; 
-        this.board[row][col].piece = this.selectedPiece;
+                let namePiece = document.createElement('p');
+                namePiece.classList.add('namePiece');
 
-        console.log(this.selectedPiece);
-        console.log(this.board[row][col].piece);
-        console.log(this.selectedPiece)
+                let pointPiece = document.createElement('p');
+                pointPiece.classList.add('pointPiece');
 
-    },
-
-    selectPiece(piece) {
-
-        this.selectedPiece = piece;
-        console.log(this.selectedPiece);
-
-    },
-
-    placeSelectedPiece() {
-
-        // Place the selected piece on the board (displays the piece on the board with the appropriate color)
-        this.board[row][col].piece = this.selectedPiece;
-        console.log(this.board[row][col].piece);
-
-        // Reset the selected piece
-        
-    },
-  };
-}
-
-function initializeBoard() {
-
-    const rows = 10;
-    const columns = 10;
-    const board = [];
-
-    // Helper function to determine if a cell is part of the middle sections (empty of board pieces)
-    const isMiddleCell = (row, col) => {
-        const middleRows = [5, 6]
-        const middleCols =  [1, 2, 5, 6, 9, 10];
-        return middleRows.includes(row) && middleCols.includes(col);
-    }
-
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < columns; col++) {
-            board.push({
-                type: isMiddleCell(row, col) ? 'middle-square' : 'square',
-                row: row,
-                col: col,
-                piece: null,
-            });
+                piece.appendChild(namePiece);
+                piece.appendChild(pointPiece);
+                square.appendChild(piece);
+                board.appendChild(square);
+            }
         }
     }
-    console.log(board);
+    generateBoard();
 
-    return {
-        board: board,
+    // Fetch hint api 
+    async function fetchPieces() {
+        piecesObjects = [];
+        const r = await fetch('http://127.0.0.1:3000/hints',
+            {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+        // insert into piecesObjets the linePieces
+        if (r.ok === true) {
+            const piecesNames = await r.json();
+            for (let i = 0; i < piecesNames.length; i++) {
+                const linePiece = piecesNames[i];
+                for (let i = 0; i < linePiece.length; i++) {
+                    piecesObjects.push(linePiece[i]);
+                }
+            }
+        }
     }
 
-}
+    // Generate choosen pieces
+    async function generateChoosenPieces() {
+        await fetchPieces();
+        for (let i = 0; i < 40; i++) {
+            let square2 = document.createElement('div');
+            square2.classList.add('square2');
+
+            let piece2 = document.createElement('div');
+            piece2.classList.add('piece2');
+
+            let namePiece2 = document.createElement('p');
+            namePiece2.classList.add('namePiece2');
+
+            let pointPiece = document.createElement('p');
+            pointPiece.classList.add('pointsPiece2');
+
+            namePiece2.textContent = piecesObjects[i].piece.name;
+            pointPiece.textContent = piecesObjects[i].piece.points;
+
+            piece2.appendChild(namePiece2);
+            piece2.appendChild(pointPiece);
+            square2.appendChild(piece2);
+            selectedPieces.appendChild(square2);
+        }
+        takeValue();
+    }
+    generateChoosenPieces()
+
+    //Function to take value of the clicked pieces on the bottom board
+    function takeValue() {
+        let squares2 = document.querySelectorAll('.square2');
+        squares2.forEach(function (square) {
+            square.addEventListener('click', function () {
+                choosenPiece.classList.remove('hidden');
+                let namePiece = square.querySelector('.namePiece2').textContent;
+                let pointPiece = square.querySelector('.pointsPiece2').textContent;
+                let namePieceSelected = document.querySelector('.namePieceSelected');
+                let pointsPieceSelected = document.querySelector('.pointsPieceSelected');
+                namePieceSelected.textContent = namePiece;
+                pointsPieceSelected.textContent = pointPiece;
+            })
+        })
+    }
+
+    //Select the place to insert the piece on the top board
+    let squares = document.querySelectorAll('.square');
+    squares.forEach(function (square) {
+
+        square.addEventListener('click', function () {
+            if (!playing) {
+                playing = 0;
+                // remove class 'squareSelected'
+                squares.forEach(function (s) {
+                    s.classList.remove('squareSelected');
+                });
+                // add class 'squareSelected' on the clicked piece
+                square.classList.add('squareSelected');
+
+                //If playing, user can selected two pieces
+            } else if (playing) {
+                count++;
+                square.classList.add('squareSelected');
+                if (count === 3) {
+                    squares.forEach(function (s) {
+                        s.classList.remove('squareSelected');
+                        count = 0;
+                    });
+                }
+            }
+        })
+    })
+
+    //insert the value of choosenPiece in the selectedPiece if it has squareSelectedPiece class
+    for (let i = 0; i < 40; i++) {
+        squares[i].classList.add('pieceToPlay');
+        piecesToPlay.push(squares[i])
+    }
+
+    placePiece.addEventListener('click', () => {
+        let namePieceSelected = document.querySelector('.namePieceSelected').textContent;
+        let pointsPieceSelected = document.querySelector('.pointsPieceSelected').textContent;
+        piecesToPlay.forEach((e) => {
+            if (e.classList.contains('squareSelected')) {
+                let placeToInsertName = e.querySelector('.namePiece ');
+                let placeToInsertPoint = e.querySelector('.pointPiece');
+                placeToInsertName.textContent = namePieceSelected;
+                placeToInsertPoint.textContent = pointsPieceSelected;
+                e.classList.add('pieceToPlayOnBoard')
+            }
+        })
+    })
+
+    // Function to update the board after fetching pieces
+    async function updateBoard() {
+        await fetchPieces();
+        let pieceNameToInsert = Array.from(document.querySelectorAll('.namePiece'));
+        let piecePointToInsert = Array.from(document.querySelectorAll('.pointPiece'));
+        let piecesToPlay = document.querySelectorAll('.pieceToPlay')
+
+        // Update the board with the fetched pieces
+        for (let i = 0; i < 40; i++) {
+            pieceNameToInsert[i].textContent = piecesObjects[i].piece.name;
+            piecePointToInsert[i].textContent = piecesObjects[i].piece.points;
+            if (pieceNameToInsert[i] !== "" && piecePointToInsert !== "") {
+                piecesToPlay[i].classList.add('pieceToPlayOnBoard');
+            }
+        }
+    }
+
+    //api hints fetch onclick
+    generateBoardPieces.addEventListener('click', () => {
+        updateBoard();
+    })
+
+    // Generate 8 pieces of the two lakes
+    function generateLake() {
+        squaresLakes = [squares[42], squares[43], squares[52], squares[53], squares[46], squares[47], squares[56], squares[57]];
+
+        for (let i = 0; i < squaresLakes.length; i++) {
+            squaresLakes[i].classList.add('lake')
+        }
+    }
+    generateLake();
+
+    //click on th button play: game can begin
+    play.addEventListener('click', () => {
+        playing = true;
+        play.textContent = 'Déplacer le pion';
+        containerChoosenPieces.classList.add('none');
+        generateBoardPieces.classList.add('none');
+        choosenPiece.classList.add('none');
+
+        movePiece();
+
+        squares.forEach(function (s) {
+            s.classList.remove('squareSelected');
+            count = 0;
+        })
+    })
+
+    //move piece
+    function movePiece() {
+        let pieceToMoveName;
+        let pieceToMovePoint;
+        let pieceToDeleteName;
+        let pieceToDeletePoint;
+        let classesToDelete = document.querySelectorAll('.pieceToPlayOnBoard');
+
+        squares.forEach(function (e) {
+            if (e.classList.contains("squareSelected") && count === 2) {
+                let piecesSelectedName = e.querySelectorAll(".namePiece");
+                let piecesSelectedPoint = e.querySelectorAll(".pointPiece");
+
+                for (let i = 0; i < piecesSelectedName.length; i++) {
+                    if (piecesSelectedName[i].textContent !== "") {
+                        pieceToMoveName = piecesSelectedName[i].textContent;
+                        pieceToDeleteName = e.querySelector(".namePiece");
+                    }
+                    if (piecesSelectedName[i].textContent === "") {
+                        piecesSelectedName[i].textContent = pieceToMoveName;
+                        pieceToDeleteName = pieceToDeleteName.textContent = "";
+                    }
+                    if (piecesSelectedPoint[i].textContent !== "") {
+                        pieceToMovePoint = piecesSelectedPoint[i].textContent;
+                        pieceToDeletePoint = e.querySelector(".pointPiece");
+                    }
+                    if (piecesSelectedPoint[i].textContent === "") {
+                        piecesSelectedPoint[i].textContent = pieceToMovePoint;
+                        e.classList.add('pieceToPlayOnBoard');
+                        pieceToDeletePoint = pieceToDeletePoint.textContent = "";
+                    }
+                }
+                for (let i = 0; i < classesToDelete.length; i++) {
+                    if (classesToDelete[i].textContent === "") {
+                        classesToDelete[i].classList.remove('pieceToPlayOnBoard');
+                    }
+                }
+            }
+        });
+    }
+});
+
+
+
+
+
+
