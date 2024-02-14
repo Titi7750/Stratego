@@ -173,6 +173,27 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+    
+    async function otherPlayer(){
+        await fetchPieces();
+
+        let pieceNameToInsert = Array.from(document.querySelectorAll('.namePiece'));
+        pieceNameToInsert.reverse();
+
+        let squares = Array.from(document.querySelectorAll('.square'));
+        console.log(squares);
+
+        let piecePointToInsert = Array.from(document.querySelectorAll('.pointPiece'));
+        piecePointToInsert.reverse();
+
+        // Update the board with the fetched pieces
+        for (let i = 0; i < 40; i++) {
+            pieceNameToInsert[i].textContent = piecesObjects[i].piece.name;
+            piecePointToInsert[i].textContent = piecesObjects[i].piece.points;
+            pieceNameToInsert[i].classList.add('namePieceOtherPlayer');
+        }
+    }
+    otherPlayer();
 
     //api hints fetch onclick
     generateBoardPieces.addEventListener('click', () => {

@@ -111,6 +111,21 @@ body {
     background-color: var(--grey);
 }
 
+.square :has(.namePieceOtherPlayer ) {
+    background-color: var(--black);
+    color: var(--white);
+    height: 100%;
+    width: 100%;
+}
+.square :has(.namePieceOtherPlayer ) .namePiece {
+    background-color: var(--black);
+    color: var(--white);
+}
+.square :has(.namePieceOtherPlayer ) .pointPiece {
+    background-color: var(--black);
+    color: var(--white);
+}
+
 .squareSelected {
     background-color: var(--grey-hover);
     border: 1px solid var(--grey-hover);
